@@ -1,0 +1,43 @@
+
+general outline 
+
+collect usernames in text file
+function that sets the usernames into the data collector
+function that sends messages / notifications (email,)
+          - update when the notification was sent to the user
+          - collect notification time for each user and store it in a dictionary 
+pay us a subscription fee of #hive per week/month/year or some timeframe
+
+-------------------------------
+phase 1
+-------------------------------
+flow
+user signs up for service
+once signed up we get that username into a text file
+take each user name from text file and pass it through the data function: then check hive power and time remaining to full charge
+
+initially test / store in google form 
+google collab notebook - execute our python scripts. 
+send a notification that they signed up and display their hive power % and time remaining until full
+send notification when hive power is at 99% or 100% 
+develop a formula for how often to check back based on persentage 
+after every 30 minutes we check 
+-------------------------------
+
+
+
+
+
+difference between hive node being compensated or not is not related to computation is being given out, its all about the witness votes. 
+Brand Roland
+Dean Tikalsky
+
+cos simulatary matrix
+
+morfing
+
+hiveblocks.comp
+hiveblockexplorer
+
+
+
