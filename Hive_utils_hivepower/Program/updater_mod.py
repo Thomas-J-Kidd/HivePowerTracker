@@ -4,9 +4,7 @@ from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium.webdriver.common.by import By
 import time
 import schedule
-import smtplib, ssl
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+import send_email
 import sys
 
 
@@ -17,7 +15,7 @@ class Hive_power_tracker:
         # getting drivers / webscraping working
         options = FirefoxOptions()
         options.add_argument("--headless")
-        self.driver = webdriver.Firefox(executable_path = r'/home/butterfly/home/Documents/Project/Blockchain/Hive_utils/Hive_utils_hivepower/Drivers/geckodriver', options=options) #this is the path where my geckodriver exists
+        self.driver = webdriver.Firefox(executable_path = r'/home/hivepowertracker/HivePowerTracker/Program/geckodriver', options=options) #this is the path where my geckodriver exists
 
         # getting data paramaters accessible for the whole class
         self.username = username
@@ -29,11 +27,12 @@ class Hive_power_tracker:
         self.effective_hive_power = ''
         self.hive_power = ''
         self.total_minute_value = 0
-
+        self.total_time = 0
+        
         # getting user data 
         # self.get_user_data()
-        self.email()
         #print(self)
+        self.check()
         
 
     # gets user data
@@ -41,11 +40,15 @@ class Hive_power_tracker:
 
         hivestats_url = 'https://hivestats.io/@' + self.username
         self.driver.get(hivestats_url)
-        time.sleep(3)
+        time.sleep(10)
         self.vote_value_percentage = self.driver.find_element(By.XPATH,'/html/body/div/div/div[1]/div/div[2]/section[1]/div[2]/div/div/span[1]/span[2]')
         self.time_to_100 = self.driver.find_element(By.XPATH,'/html/body/div/div/div[1]/div/div[2]/section[3]/div[2]/table/tbody/tr[8]/td[2]')
         self.effective_hive_power = self.driver.find_element(By.XPATH, '/html/body/div/div/div[1]/div/div[2]/section[3]/div[2]/table/tbody/tr[1]/td[2]/span')
         self.hive_power = self.driver.find_element(By.XPATH, '/html/body/div/div/div[1]/div/div[2]/section[3]/div[2]/table/tbody/tr[2]/td[2]/span')
+        
+        # uses get_time function to calculate the remianing time need to wait with the treshold
+        self.total_time = self.get_time()
+
 
         
         
@@ -100,52 +103,28 @@ class Hive_power_tracker:
                 minute_value = int(temp[minute_index-1])
                 self.total_minute_value += minute_value
 
-        return self.total_minute_value
+        return self.total_minute_value-self.treshold
 
 
 
-    def email(self):
-
-        # email things
-        port = 465  # For SSL
-        smtp_server = "smtp.gmail.com"
-        sender_email = "hivepower100@gmail.com"  # Enter your address
-        password = "100%_hivepower_0%"
-        subject = self.username + " YOUR HIVE POWER IS FULL"
-        body =  "Hello there: " + self.username + "\n\nYour hive power is full"
-        message = MIMEMultipart()
-        message['From'] = sender_email
-        message['To'] = self.email_address
-        message['Subject'] = subject
-        message.attach(MIMEText(body, 'plain'))
-        text = message.as_string()
-
-        print("Getting User Data")
+    def check(self):
+        print("Checking for user:", self.username)
         self.get_user_data()
-        print("Getting check back time")
-        check_back_time = self.get_time()
+        if (self.total_time <= self.treshold):
+            send_email.send_email(self.username, self.email_address)
+            print("waiting for user: ", self.username, " ", self.resend_time, " minutes.")
+            time.sleep(self.resend_time*60)
+            self.check()
+        else:
+            print("Waiting")
+            time.sleep(self.total_time*60)
+            self.check()
         
-        schedule.every(check_back_time).minutes.do(self.email)
-        while 1:
-           
-            if check_back_time == self.treshold:
-                print("Prepping email")
-                # Create a secure SSL context
-                context = ssl.create_default_context()
-                # create server variable
-                with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server:
-                    # log in to email
-                    server.login(sender_email, password)
-                    # send email
-                    
-                    server.sendmail(sender_email, self.email_address, text)
-                    print("Sent email")
-                # ending the session
-                check_back_time = self.resend_time
-                schedule.every(check_back_time).minutes.do(self.email)
 
-                schedule.run_pending()
-                time.sleep(5)
+ 
+        
+       
+      
         
 
         
