@@ -33,6 +33,11 @@ class Hive_power_tracker:
         # self.get_user_data()
         #print(self)
         self.check()
+    # prints out user data 
+    def __repr__(self): 
+        print("---------------","\nUser:", self.username, "\nVote Power:", self.vote_value_percentage.text, "\nTime untill full:", self.time_to_100.text, "\nEffective HP:", self.effective_hive_power.text, "\nActual HP:", self.hive_power.text, "\nFull Hive Power in: ", self.total_minute_value, " minutes")
+        #return "User: % s Vote Power: % s Time untill full: % s Effective HP: % s Actual HP: % s" % (self.username, self.vote_value_percentage, self.time_to_100, self.effective_hive_power, self.hive_power) 
+        return "---------------"
         
 
     # gets user data
@@ -48,18 +53,7 @@ class Hive_power_tracker:
         
         # uses get_time function to calculate the remianing time need to wait with the treshold
         self.total_time = self.get_time()
-
-
-        
-        
         return 0
-
-            
-    # prints out user data 
-    def __repr__(self): 
-        print("---------------","\nUser:", self.username, "\nVote Power:", self.vote_value_percentage.text, "\nTime untill full:", self.time_to_100.text, "\nEffective HP:", self.effective_hive_power.text, "\nActual HP:", self.hive_power.text, "\nFull Hive Power in: ", self.total_minute_value, " minutes")
-        #return "User: % s Vote Power: % s Time untill full: % s Effective HP: % s Actual HP: % s" % (self.username, self.vote_value_percentage, self.time_to_100, self.effective_hive_power, self.hive_power) 
-        return "---------------"
 
     # gets the number of minutes left for the user to have full hive power again
     def get_time(self):
