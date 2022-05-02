@@ -8,8 +8,8 @@ def send_email(username, email_address):
 
     # email service constants
     smtp_server = "smtp.gmail.com"
-    sender_email = "hivepower100@gmail.com"  # Enter your address
-    password = "100%_hivepower_0%"
+    sender_email = "youremail"  # Enter your address
+    password = "youremailpassword"
 
     # messgae
     subject = username + " YOUR HIVE POWER IS FULL"
